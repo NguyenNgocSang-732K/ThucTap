@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model Client.Models.Entities.BallotRequest
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Ballot request</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-area="admin" asp-controller="ballotrequest" asp-action="index">Ballot request</a>/</li>
+                    <li class="breadcrumb-item">Details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div>
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td>@Model.AccName</td>
+                </tr>
+                <tr>
+                    <td>Type:</td>
+                    <td>@(Model.Type? "Sửa chửa" : "Bảo trì")</td>
+                </tr>
+                <tr>
+                    <td>Title:</td>
+                    <td>@Model.Title</td>
+                </tr>
+                <tr>
+                    <td>Content:</td>
+                    <td>@Model.Content</td>
+                </tr>
+                <tr>
+                    <td>DayCreate:</td>
+                    <td>@(Model.DayCreate.ToString("dd/MM/yyyy"))</td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>
+                        @if (Model.Status == 0)
+                        {
+                            <span class="badge bg-primary">Chưa kiểm duyệt</span>
+                        }
+                        else if (Model.Status == 1)
+                        {
+                            <span class="badge bg-success">Đã xác nhận</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Huỷ</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        @if (Model.Status == 0)
+                        {
+                            <br />
+                            <br />
+                            <button type="button" data-id="@Model.Id" id="btnAccept" class="btn btn-block btn-primary">Duyệt</button>
+                            <br />
+                            <button type="button" data-id="@Model.Id" id="btnRemove" class="btn btn-block btn-danger">Xoá</button>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</section>
+@section script{
+    <script>
+        $(document).ready(function () {
+
+        })
+
+        $('#btnAccept').click(function () {
+            console.log($(this).attr("data-id"));
+            debugger;
+            $.ajax({
+                url: '/admin/ballotrequest/setstatus',
+                method: 'post',
+                dataType: 'json',
+                data: { id: $(this).attr("data-id") },
+                success: function (data) {
+                    if (data == "200") {
+                        window.location.reload();
+                    } else {
+                        alertError('Error 500');
+                    }
+                },
+                error: function () {
+                    alertError('Internet Connection Error');
+                }
+            })
+        })
+
+        $('#btnRemove').click(function () {
+            $.ajax({
+                url: '/admin/ballotrequest/remove',
+                method: 'post',
+                dataType: 'json',
+                data: { id: $(this).attr("data-id") },
+                success: function (data) {
+                    if (data == "200") {
+                        alertSuccessRedirect("Remove request success.", "/admin/ballotrequest/index");
+                    } else {
+                        alertError('Error 500');
+                    }
+                },
+                error: function () {
+                    alertError('Internet Connection Error');
+                }
+            })
+        })
+    </script>
+}

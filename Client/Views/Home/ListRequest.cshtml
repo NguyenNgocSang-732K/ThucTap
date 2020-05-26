@@ -1,0 +1,65 @@
+﻿@model Client.Models.Entities.BallotRequest
+@{
+    ViewData["Title"] = "ListRequest";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="container">
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Title</th>
+                <th>DayCreate</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.List != null)
+            {
+                @foreach (BallotRequest item in ViewBag.List)
+                {
+                    <tr class="record-ace">
+                        <td><input type="checkbox" name="check_id[]" value="@item.Id"></td>
+                        <td>@item.AccName</td>
+                        <td>@(item.Type? "Sửa chửa": "Bảo trì")</td>
+                        <td>@item.Title</td>
+                        <td>@item.DayCreate.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (item.Status == 0)
+                            {
+                                <span class="badge bg-primary">Chưa kiểm duyệt</span>
+                            }
+                            else if (item.Status == 1)
+                            {
+                                <span class="badge bg-success">Đã xác nhận</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Huỷ</span>
+                            }
+                        </td>
+                        <td style="width:160px">
+                            @if (item.Status == 0)
+                            {
+                                <a class="btn btn-info btn-sm" asp-controller="home" asp-action="details" asp-route-id="@item.Id">
+                                    <i class="fas fa-pencil-alt">
+                                    </i> &nbsp;
+                                    <span class="view-edit" style="font-size:1rem;">View/Edit</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <i class="fas fa-trash">&nbsp;</i>
+                                <span class="view-edit" style="font-size:1rem;">Remove</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

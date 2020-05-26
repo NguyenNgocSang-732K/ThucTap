@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+@if (User.FindFirst(ClaimTypes.Email) == null)
+{
+    <a asp-controller="home" asp-action="login">Login</a>
+}
+else
+{
+    <h4>Mail: @User.FindFirst(ClaimTypes.Email).Value</h4>
+    <a asp-controller="home" asp-action="logout">Logout</a>
+    <a asp-controller="home" asp-action="createballot">| Create ballotrequest</a>
+    <a asp-controller="home" asp-action="listrequest">| View my request</a>
+}
+

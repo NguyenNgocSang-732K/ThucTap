@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Ballot request</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Ballot request</a></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>DayCreate</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BallotRequest item in ViewBag.Data)
+                    {
+                        <tr class="record-ace">
+                            <td><input type="checkbox" name="check_id[]" value="@item.Id"></td>
+                            <td>@item.AccName</td>
+                            <td>@(item.Type? "Sửa chửa": "Bảo trì")</td>
+                            <td>@item.Title</td>
+                            <td>@item.DayCreate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (item.Status == 0)
+                                {
+                                    <span class="badge bg-primary">Chưa kiểm duyệt</span>
+                                }
+                                else if (item.Status == 1)
+                                {
+                                    <span class="badge bg-success">Đã xác nhận</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Huỷ</span>
+                                }
+                            </td>
+                            <td style="width:160px">
+                                <a class="btn btn-info btn-sm" asp-area="admin" asp-controller="ballotrequest" asp-action="detail" asp-route-id="@item.Id">
+                                    <i class="fas fa-pencil-alt">
+                                    </i> &nbsp;
+                                    <span class="view-edit" style="font-size:1rem;">View</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="row my-3">
+            <div class="col-sm-12 col-md-6">
+                <div class="float-left">
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 page">
+                <ul id="pagination" class="pagination-sm float-right"></ul>
+            </div>
+        </div>
+    </div>
+</section>
+@section script{
+    <script>
+        $(document).ready(function () {
+            phantrangCurrentPage();
+        })
+
+        function phantrangCurrentPage() {
+            phantrang('#pagination', @(ViewBag.Count), '/admin/ballotrequest?page=');
+        }
+    </script>
+}
